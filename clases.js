@@ -105,13 +105,17 @@ class aeropuerto{
     }
 
     añadirVueloNuevo(codigo, hora_llegada, hora_salida){
+        if(compararHoras(hora_salida, hora_llegada)){
         let vueloNuevo= new vuelo(codigo, hora_llegada, hora_salida);
         this.vuelos.push(vueloNuevo);
+        }else{
+            console.log('Vuelo: ' + codigo + ' no añadido.');
+        }
     }
 
     añadirVuelosAleatorios(num_vuelos_diarios){
         for(let i=0; i< num_vuelos_diarios; i++){
-            let vNuevo= new vuelo(i, i+':0'+i, i+'0:0'+i);
+            let vNuevo= new vuelo(i, '00:00', '01:00');
             this.vuelos.push(vNuevo);
         }
     }
@@ -125,29 +129,60 @@ class vuelo{
     }
 
     modificarLlegada(hora_llegada_nueva){
-        if(this.comprobarLlegadaCorrecta(hora_llegada_nueva)){
+        if(compararHoras(this.hora_salida, hora_llegada_nueva)){
             this.hora_llegada= hora_llegada_nueva;
+        }else{
+            console.log('La hora de llegada no ha sido modificada.'); 
         }
     }
 
     modificarSalida(hora_salida_nueva){
-        if(this.comprobarSalidaCorrecta(hora_salida_nueva)){
+        if(compararHoras(hora_salida_nueva, this.hora_llegada)){
             this.hora_salida= hora_salida_nueva;
+        }else{
+            console.log('La hora de salida no ha sido modificada.'); 
         }
     }
 
-    comprobarSalidaCorrecta(hora_salida_nueva){
-        return hora_salida_nueva < this.hora_llegada;
-    }
+}
 
-    comprobarLlegadaCorrecta(hora_llegada_nueva){
-        return hora_llegada_nueva > this.hora_salida;
+function compararHoras(salida, llegada){
+    let minutosSalida= conseguirMinutosTotales(salida);
+    let minutosLlegada= conseguirMinutosTotales(llegada);
+    return minutosSalida<minutosLlegada;
+}
+
+function conseguirMinutosTotales(horaEntrada){
+    let hora= parseInt(separarHoras(horaEntrada), 10);
+    let minutos= parseInt(separarMinutos(horaEntrada), 10);
+    let minutosTotales= (hora*60) + minutos;
+    return minutosTotales;
+}
+
+function separarHoras(stringHora){
+    let hora;
+    if(stringHora.length == 4){
+        hora= stringHora.substring(0,1);
+    }else{
+        hora= stringHora.substring(0,2); 
     }
+    return hora;
+}
+
+function separarMinutos(stringHora){
+    let min;
+    if(stringHora.length == 4){
+        min= stringHora.substring(2,4);
+    }else{
+        min= stringHora.substring(3,5); 
+    }
+    return min;
 }
 
 var aeropuerto1= new aeropuerto('Santo', 'Alicante', 3);
 
-console.log(aeropuerto1);
+aeropuerto1.añadirVueloNuevo(56485, '15:45', '10:30');
+
 
 //3
 
