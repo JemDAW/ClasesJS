@@ -6,11 +6,11 @@ class colegio{
         this.numero_aulas= numero_aulas;
         this.alumnos= [];
         if(numero_alumnos > 0){
-            this.añadirAlumnosIniciales(numero_alumnos);
+            this.addAlumnosIniciales(numero_alumnos);
         }
     }
 
-    añadirAlumnosIniciales(numero_alumnos){
+    addAlumnosIniciales(numero_alumnos){
         for(let i=0;i<numero_alumnos;i++){
           let alumnoNuevo=  new alumno(this.dniAleatorio(), 'nombre' + i, this.notaAleatoria());
           this.alumnos.push(alumnoNuevo);
@@ -35,7 +35,7 @@ class colegio{
         return mediaReal.toFixed(2);
     }
 
-    añadirAlumnoNuevo(DNI, nombre, nota_media){
+    addAlumnoNuevo(DNI, nombre, nota_media){
         if(nota_media<=10 && nota_media>=0){
         let alumNuevo= new alumno(DNI, nombre, nota_media);
         this.alumnos.push(alumNuevo);
@@ -71,19 +71,19 @@ class alumno{
 //Ej1
 var colegio1= new colegio("IES Paco Molla", 12, 5);
 
-colegio1.añadirAlumnoNuevo("20917649T", 'Jemima', 9,2);
-colegio1.añadirAlumnoNuevo("65485312D", 'Jose Miguel', 7,5);
+colegio1.addAlumnoNuevo("20917649T", 'Jemima', 9,2);
+colegio1.addAlumnoNuevo("65485312D", 'Jose Miguel', 7,5);
 
 console.log(colegio1.obtenerMedia());
 
 //Ej2
 var colegio2= new colegio("IES Torrellano", 5, 3);
 
-colegio2.añadirAlumnoNuevo('1254865', 'Ana', 9);
-colegio2.añadirAlumnoNuevo('33333333', 'Manuel', 8);
-colegio2.añadirAlumnoNuevo('3334533', 'Maria', 7);
-colegio2.añadirAlumnoNuevo('3345843', 'Miriam', 8);
-colegio2.añadirAlumnoNuevo('5', 'Francisco', 23);
+colegio2.addAlumnoNuevo('1254865', 'Ana', 9);
+colegio2.addAlumnoNuevo('33333333', 'Manuel', 8);
+colegio2.addAlumnoNuevo('3334533', 'Maria', 7);
+colegio2.addAlumnoNuevo('3345843', 'Miriam', 8);
+colegio2.addAlumnoNuevo('5', 'Francisco', 23);
 
 console.log(colegio2.obtenerMedia());
 
@@ -100,11 +100,19 @@ class aeropuerto{
         this.ciudad= ciudad;
         this.vuelos= [];
         if(num_vuelos_diarios>0){
-            this.añadirVuelosAleatorios(num_vuelos_diarios);
+            this.addVuelosAleatorios(num_vuelos_diarios);
         }
     }
 
-    añadirVueloNuevo(codigo, hora_llegada, hora_salida){
+    addVueloNuevoObjeto(vuelo){
+        if(compararHoras(vuelo.hora_salida, vuelo.hora_llegada)){
+        this.vuelos.push(vuelo);
+        }else{
+            console.log('Vuelo: ' + vuelo.codigo + ' no añadido.');
+        }
+    }
+
+    addVueloNuevo(codigo, hora_llegada, hora_salida){
         if(compararHoras(hora_salida, hora_llegada)){
         let vueloNuevo= new vuelo(codigo, hora_llegada, hora_salida);
         this.vuelos.push(vueloNuevo);
@@ -113,7 +121,7 @@ class aeropuerto{
         }
     }
 
-    añadirVuelosAleatorios(num_vuelos_diarios){
+    addVuelosAleatorios(num_vuelos_diarios){
         for(let i=0; i< num_vuelos_diarios; i++){
             let vNuevo= new vuelo(i, '00:00', '01:00');
             this.vuelos.push(vNuevo);
@@ -179,9 +187,20 @@ function separarMinutos(stringHora){
     return min;
 }
 
+//Ejemplos
+//Ej1
 var aeropuerto1= new aeropuerto('Santo', 'Alicante', 3);
 
-aeropuerto1.añadirVueloNuevo(56485, '15:45', '10:30');
+aeropuerto1.addVueloNuevo(56485, '15:45', '10:30');
+aeropuerto1.addVueloNuevo(54685,'21:00', '23:56');
+
+var vuelo1= new vuelo(84569, '11:45', '12:00');
+
+aeropuerto1.addVueloNuevoObjeto(vuelo1);
+
+vuelo1.modificarLlegada('13:00');
+aeropuerto1.addVueloNuevoObjeto(vuelo1);
+
 
 
 //3
@@ -190,12 +209,45 @@ class hospital{
     constructor(nombre, ciudad, num_pacientes){
         this.nombre= nombre;
         this.ciudad= ciudad;
-        this.num_pacientes= num_pacientes;
         this.pacientes= [];
+        if(num_pacientes>0){
+            this.addPacientesAleatorios(num_pacientes);
+        }
     }
 
-    darAlta(códigoPaciente){
+    addPacientesAleatorios(num_pacientes){
+        for(let i=0;i<num_pacientes;i++){
+            let pacienteAleatorio = new paciente(this.dniAleatorio(), 'Nombre'+i, this.enfermedadAleatoria());
+            this.pacientes.push(pacienteAleatorio);
+        }
+    }
 
+    addPacienteNuevo(DNI, nombre, enfermedad){
+        let newPaciente= new paciente(DNI, nombre, enfermedad);
+        this.pacientes.push(newPaciente);
+    }
+
+    addPacienteObjeto(paciente){
+        this.pacientes.push(paciente);
+    }
+
+    enfermedadAleatoria(){
+        const enfermedades = ['Gripe', 'Covid', 'Lumbago', 'Neumonía', 'Clamidia', 'Sífilis', 'Epilepsia', 'Cáncer', 'VIH', 'Bulimia'];
+        let numAleatorio= Math.trunc(Math.random() * 10);
+        return enfermedades[numAleatorio];
+    }
+
+    dniAleatorio() {
+        let num = Math.floor( ( Math.random() * 100000000 ) );
+         return num;
+       }
+
+    darAlta(codigoPaciente){
+        for(let i=0;i<this.pacientes.length;i++){
+            if(codigoPaciente == this.pacientes[i].DNI){
+                this.pacientes.splice(i,1);
+            }
+        }
     }
 }
 
@@ -206,3 +258,20 @@ class paciente{
         this.enfermedad= enfermedad;
     }
 }
+//Ejemplos
+//Ej
+var hospital1 = new hospital('Vinalopó', 'Elche', 3);
+console.log('Hay: '+hospital1.pacientes.length+' pacientes en el hospital.');
+
+var paciente1 = new paciente(20917649, 'Jem', 'Anginas');
+hospital1.addPacienteObjeto(paciente1);
+console.log('Hay: '+hospital1.pacientes.length+' pacientes en el hospital.');
+
+hospital1.addPacienteNuevo(45851254,'Jose', 'Apendicitis');
+console.log('Hay: '+hospital1.pacientes.length+' pacientes en el hospital.');
+
+hospital1.darAlta(20917649);
+console.log('Hay: '+hospital1.pacientes.length+' pacientes en el hospital.');
+
+hospital1.darAlta(45851254);
+console.log('Hay: '+hospital1.pacientes.length+' pacientes en el hospital.');
